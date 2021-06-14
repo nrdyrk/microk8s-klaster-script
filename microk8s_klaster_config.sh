@@ -46,9 +46,11 @@ sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 sudo apt update
 
 # Enable cgroup memory
-sudo sed -e '1s/$/ cgroup_memory=1 cgroup_enable=memory/' -i /boot/firmware/cmdline.txt
+echo "Enable memory cgroup..."
+sudo sed -e '1s/$/ cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory/' -i /boot/firmware/cmdline.txt
 
 # install kubernetes .. using current known working version
+echo "Installing microk8s..."
 snap install microk8s --classic --channel=${CHANNEL}
 # use the kubectl that matches the microk8s kubernetes version
 snap alias microk8s.kubectl kubectl
@@ -67,4 +69,9 @@ iptables -P FORWARD ACCEPT
 #   sleep 5
 # done
 
-echo "Done!"
+echo "Update user permissions..."
+sudo usermod -a -G microk8s $USER
+sudo chown -f -R $USER ~/.kube
+newgrp microk8s
+
+echo "microk8s successfully configured"
