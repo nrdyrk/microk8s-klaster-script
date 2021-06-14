@@ -43,7 +43,7 @@ sudo swapoff -a
 sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 
 # Update everything
-sudo apt update && sudo apt upgrade -y
+sudo apt update -y
 
 # Enable cgroup memory
 sudo sed -i '$ s/$/ cgroup_enable=memory cgroup_memory=1/' /boot/firmware/cmdline.txt
