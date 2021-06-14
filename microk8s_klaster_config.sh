@@ -46,7 +46,7 @@ sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 sudo apt update
 
 # Enable cgroup memory
-sudo sed -i '$ s/$/ cgroup_enable=memory cgroup_memory=1/' /boot/firmware/cmdline.txt
+sudo sed -e '1s/$/ cgroup_memory=1 cgroup_enable=memory/' -i /boot/firmware/cmdline.txt
 
 # install kubernetes .. using current known working version
 snap install microk8s --classic --channel=${CHANNEL}
