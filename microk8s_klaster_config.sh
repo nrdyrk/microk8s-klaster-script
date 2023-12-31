@@ -7,8 +7,6 @@ echo "microK8s setup script"
 set -e  # exit immediately on error
 set -u  # fail on undeclared variables
 
-CHANNEL=${CHANNEL:-1.21/stable}
-
 # Must be root user
 if [ "$(id -u)" != "0" ] ; then
 	echo "Sorry, you are not root."
@@ -51,7 +49,7 @@ sudo sed -e '1s/$/ cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory/' -
 
 # install kubernetes .. using current known working version
 echo "Installing microk8s..."
-snap install microk8s --classic --channel=${CHANNEL}
+sudo snap install microk8s --classic
 # use the kubectl that matches the microk8s kubernetes version
 snap alias microk8s.kubectl kubectl
 # export the kubectl config file in case other tools rely on this
@@ -62,7 +60,7 @@ microk8s.status --wait-ready
 # enable common services
 # microk8s.enable dns dashboard storage
 # This gets around an open issue with all-in-one installs
-iptables -P FORWARD ACCEPT
+# iptables -P FORWARD ACCEPT
 
 # until [[ `kubectl get pods -n=kube-system | grep -o 'ContainerCreating' | wc -l` == 0 ]] ; do
 #   echo "Waiting for kubernetes addon service pods to be ready..  ("`kubectl get pods -n=kube-system | grep -o 'ContainerCreating' | wc -l`" not running)"
